@@ -1,0 +1,9 @@
+name: 'My Custom Action'
+description: 'Description of your custom action'
+inputs:
+  some-input:
+    description: 'Description of the input'
+    required: true
+runs:
+  using: 'node12'
+  image: 'index.js'

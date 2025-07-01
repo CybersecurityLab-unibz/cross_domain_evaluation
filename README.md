@@ -1,6 +1,22 @@
-# cross_domain_evaluation
+# Cross-Domain Evaluation
+This repository contains the replication package for the work  *Cross-Domain Evaluation of Transformer-Based Vulnerability Detection on Open & Industry Data - A Mixed Study*. The work was conducted by Moritz Mock, Thomas Forrer, and Barbara Russo.
 
+Link to the pre-print (under review)
 
+Link to the publication (under review)
+
+## Abstract
+Current deep learning-based vulnerability detection solutions discussed in academia are not easily accessible for developers. Moreover, their performance in industrial settings is scarcely addressed in the literature.
+Translating approaches from academia to industry is a challenging task, especially when integrating new methods into existing technology stacks. Additionally, uncertainty about whether the approach will perform well in an industrial environment hinders its adoption.
+In this work, we propose AI-DO (*A*utomating vulnerability detection *I*ntegration for *D*evelopers' *O*perations), which embeds a transformer-based vulnerability detection approach into the review process of changed or newly developed source code. We also compiled three datasets of over 500 thousand functions annotated with state-of-the-art SAST tools, using both open and industry data. The datasets were employed in a cross-domain evaluation of a deep learner.
+A survey among developers of the company illustrates the usefulness of the AI-DO. Finally, we found that learning from the industrial data accurately predicts vulnerabilities in the same domain, but it forgets in the open-source one. We also saw that learning from a domain related open source projects is beneficial for the prediction of vulnerabilities in the industrial context.
+
+### Extraction of the datasets from the original source
+The folder /create_datasets contains a README.md with execution examples one how to create the datasets. For the industry dataset, only the final dataset is shared; however, not the repositories leveraged to create it.
+
+### Datasets
+In the following Table a detailed view of each of the datasets, per project, severity levels of semgrep and sonarqube can be found.
+The datasets themselves can be found in the folder /datasets
 <table>
     <tr>
         <td>Project</td>
@@ -745,3 +761,27 @@
         <td>1,306</td>
     </tr>
 </table>
+
+### Fine-Tuning of the model 
+The folder /code-ml contains all the necessary information to fine-tune and validate, test, perform the cross-validation. Furthermore, it contains the the file `req.txt` which is needed to recreate the environment which was leveraged for the fine-tuning.
+
+### Plots and Survey data
+The folder /plots_results and /survey\ data contain all the results in a csv format and the corresponding plots presented in the paper, alongside the R notebook, which was used to create them.
+
+### Docker 
+The folder /ml_docker_github contains the configuration which is needed to host an instance of the DL to be executed in the cloud. The model needs to stored in the path /ml_docker_github/ml_model, afterwards the container needs to created and pushed to dockerhub or any other hosting platform.
+
+### Pipeline
+The folder /pipeline, contains the implementation of the pipeline. In the file /pipeline/actions/action_dl/Dockerfile the identifier of the containerized model need to be inserted.
+
+## How to cite the work
+
+#### Preprint:
+
+```bibtext
+```
+
+#### Publication:
+
+```bibtext
+```

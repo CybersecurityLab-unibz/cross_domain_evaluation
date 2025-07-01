@@ -1,0 +1,609 @@
+---
+title: "R plots for number of SZZ commits"
+output: html_notebook
+---
+
+
+```{r}
+library(readr)
+library(jsonlite)
+library(tidyverse)
+
+```
+
+```{r}
+extract_data <- function(source, project) {
+  path = paste0("~/PycharmProjects/ExtractPHPFunctions/", source, "/commit_messages/", project, ".csv")
+  
+  data <- read_csv(path)
+  count_keys <- function(json_str) {
+   json_obj <- fromJSON(json_str)
+   length(names(json_obj))
+  }
+  count_unique_values <- function(json_str) {
+   json_obj <- fromJSON(json_str)
+   values <- unlist(json_obj)
+   length(unique(values))
+  }
+
+  data$files_affected <- sapply(data$SZZ, count_keys)
+  data$commits_affected <- sapply(data$SZZ, count_unique_values)
+  data$project <- project
+  data
+}
+data <- rbind(extract_data("data_company", "glpi"),
+extract_data("data_company", "icinga-php-library"),
+extract_data("data_company", "icinga-php-thirdparty"),
+extract_data("data_company", "icingaweb2"),
+extract_data("data_company", "icingaweb2-module-director"),
+extract_data("data_company", "icingaweb2-module-pdfexport"),
+extract_data("data_company", "icingaweb2-module-slm"),
+extract_data("data_company", "neteye-glpi"))
+# extract_data("data_oss", "CodeIgniter"),
+# extract_data("data_oss", "Project"),
+# extract_data("data_oss", "Silex"),
+# extract_data("data_oss", "Smart.Framework"),
+# extract_data("data_oss", "WordPress"),
+# extract_data("data_oss", "cakephp"),
+# extract_data("data_oss", "cphalcon"),
+# extract_data("data_oss", "drupal"),
+# extract_data("data_oss", "fatfree-core"))
+# #extract_data("data_oss", "flow"),
+# #extract_data("data_oss", "framework"),
+# extract_data("data_oss", "fuel"),
+# extract_data("data_oss", "horde_core"),
+# extract_data("data_oss", "kanboard"),
+# extract_data("data_oss", "laminas-code"),
+# extract_data("data_oss", "lithium"),
+# extract_data("data_oss", "prado"),
+# extract_data("data_oss", "qcodo"),
+# extract_data("data_oss", "server"),
+# extract_data("data_oss", "symfony"),
+# extract_data("data_oss", "yii2"),
+# extract_data("data_oss", "zikula_core"))
+data
+```
+
+```{r}
+ggplot(data, aes(x = files_affected, fill = project)) +
+  geom_histogram(binwidth = 1, position = "stack", color = "black") +
+  labs(fill = "Legend", x = "Number of files affected per commit", y = "Amount") +
+  theme_minimal()
+ggsave("data_files_affected.pdf", width = 16, height = 8, dpi = 3000)
+
+ggplot(data, aes(x = commits_affected, fill = project)) +
+  geom_histogram(binwidth = 1, position = "stack", color = "black") +
+  labs(fill = "Legend", x = "Number of commits", y = "Amount") +
+  theme_minimal()
+ggsave("data_number_commits.pdf", width = 16, height = 8, dpi = 3000)
+```
+```{r}
+df_summary <- data %>%
+  count(files_affected, commits_affected)
+
+ggplot(df_summary, aes(x = files_affected, y = commits_affected)) +
+  geom_tile(aes(fill = log1p(n))), color = "white") +
+  scale_fill_viridis_c(name = "Count") +
+  labs(x = "Files Affected",
+       y = "Commits Affected") +
+  theme_minimal()
+ggsave("heatmap_commits_files_affected.pdf", width = 16, height = 8, dpi = 3000)
+```
+
+
+
+```{r}
+data <- read_delim("results_f1.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE)
+data
+```
+
+```{r}
+data %>%
+  filter(balanced == "False") %>%
+  ggplot(aes(x = model, y = f1, fill = dataset)) +
+  geom_col(position = "dodge", width = 0.7) +
+  geom_text(aes(label = sprintf("%.3f", f1)), 
+            position = position_dodge(width = 0.7), 
+            vjust = -0.3, 
+            size = 3.5) +
+  labs(
+    title = "F1 Scores by Model and Dataset for imbalanced",
+    x = "Model",
+    y = "F1 Score",
+    fill = "Dataset"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    legend.position = "bottom"
+  ) +
+  scale_fill_brewer(type = "qual", palette = "Set2") +
+  ylim(0, 1)
+
+ggsave("f1_imbalanced.pdf", width=16, height=9)
+```
+
+
+```{r}
+data %>%
+  filter(balanced == "Equally") %>%
+  ggplot(aes(x = model, y = f1, fill = dataset)) +
+  geom_col(position = "dodge", width = 0.7) +
+  geom_text(aes(label = sprintf("%.3f", f1)), 
+            position = position_dodge(width = 0.7), 
+            vjust = -0.3, 
+            size = 3.5) +
+  labs(
+    title = "F1 Scores by Model and Dataset for balanced (equally across all datasets)",
+    x = "Model",
+    y = "F1 Score",
+    fill = "Dataset"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    legend.position = "bottom"
+  ) +
+  scale_fill_brewer(type = "qual", palette = "Set2") +
+  ylim(0, 1)
+
+ggsave("f1_balanced_equally.pdf", width=16, height=9)
+```
+```{r}
+data %>%
+  filter(balanced == "WeightedLoss") %>%
+  ggplot(aes(x = model, y = f1, fill = dataset)) +
+  geom_col(position = "dodge", width = 0.7) +
+  geom_text(aes(label = sprintf("%.3f", f1)), 
+            position = position_dodge(width = 0.7), 
+            vjust = -0.3, 
+            size = 3.5) +
+  labs(
+    title = "F1 Scores by Model and Dataset applying weighted loss",
+    x = "Model",
+    y = "F1 Score",
+    fill = "Dataset"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    legend.position = "bottom"
+  ) +
+  scale_fill_brewer(type = "qual", palette = "Set2") +
+  ylim(0, 1)
+
+ggsave("f1_balanced_weightedLoss.pdf", width=16, height=9)
+```
+```{r}
+data %>%
+  filter(balanced == "PerDataset") %>%
+  ggplot(aes(x = model, y = f1, fill = dataset)) +
+  geom_col(position = "dodge", width = 0.7) +
+  geom_text(aes(label = sprintf("%.3f", f1)), 
+            position = position_dodge(width = 0.7), 
+            vjust = -0.3, 
+            size = 3.5) +
+  labs(
+    title = "F1 Scores by Model and Dataset for balanced (per datasets)",
+    x = "Model",
+    y = "F1 Score",
+    fill = "Dataset"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    legend.position = "bottom"
+  ) +
+  scale_fill_brewer(type = "qual", palette = "Set2") +
+  ylim(0, 1)
+
+ggsave("f1_balanced_perDataset.pdf", width=16, height=9)
+```
+
+```{r}
+library(ggpattern)
+
+data <- data %>%
+  mutate(
+    balanced_label = case_when(
+      balanced == "False" ~ "None",
+      balanced == "Equally" ~ "Equally Balanced",
+      balanced == "PerDataset" ~ "Balanced Per Dataset",
+      balanced == "WeightedLoss" ~ "Weighted Loss"
+    ),
+    balanced_label = factor(balanced_label, levels = c(
+      "None", "Equally Balanced", "Balanced Per Dataset", "Weighted Loss"
+    )),
+    dataset_balanced = paste(dataset, balanced_label, sep = "_")
+  ) %>%
+  mutate(
+    angle = case_when(
+      balanced_label == "None" ~ 0,
+      balanced_label == "Equally Balanced" ~ 45,
+      balanced_label == "Balanced Per Dataset" ~ 45,
+      balanced_label == "Weighted Loss" ~ -45
+    ),
+  ) %>%
+  mutate(f1 = f1 * 100)
+
+# Plot
+ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, groups = interaction(balanced_label, angle))) +
+  geom_col_pattern(
+    pattern_angle = data$angle,
+    position = position_dodge(width = 0.9),
+    width = 0.8,
+    pattern_fill = "white",
+    pattern_colour = "white",
+    pattern_density = 0.05,
+    pattern_spacing = 0.015,
+    alpha = 0.7,
+    pattern_size = 0.4
+  ) +
+  geom_text(
+    aes(label = as.character(round(f1, digits = 1))),
+    position = position_dodge(width = 0.9),
+    vjust = -0.3,
+    size = 4
+  ) +
+  labs(
+    x = "Model",
+    y = "F1 Score",
+    fill = "Dataset",
+    pattern = "Balancing"
+  ) +
+  theme_minimal(base_size = 24) +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    legend.position = "bottom",
+    #legend.box = "vertical"  # Ensures stacked appearance
+  ) +
+  scale_fill_brewer(
+    type = "qual", 
+    palette = "Set2",
+    guide = guide_legend(
+      override.aes = list(pattern = 'none'),
+      nrow = 2  # 2 rows for the fill legend
+    ),
+    labels = c("industry" = "ID", "oss_large" = expression("ODL"), "oss_similar" = expression("ODS"))
+  ) +
+  ylim(0, 100) +
+  scale_pattern_manual(
+    values = c(
+      "None" = "none",
+      "Equally Balanced" = "stripe",
+      "Balanced Per Dataset" = "crosshatch",
+      "Weighted Loss" = "stripe"
+    ),
+    guide = guide_legend(
+      override.aes = list(pattern_fill = 'grey', pattern_angle = c(0, 45, 45, -45)),
+      nrow = 2  # 2 rows for the pattern legend
+    )
+  ) +
+  scale_x_discrete(labels = c(
+    "industry" = "ID",
+    "oss_similar" = expression("ODS"),
+    "oss_large" = expression("ODL")
+  ))
+
+
+ggsave("f1_all.pdf", width=16, height=6)
+```
+
+```{r}
+df <- data.frame(level = c("a", "b", "c", 'd'), outcome = c(2.3, 1.9, 3.2, 1))
+
+p <- ggplot(df, aes(level, outcome)) +
+  geom_col_pattern(
+    aes(pattern = level, pattern_angle = level, pattern_spacing = level), 
+    fill            = 'white',
+    colour          = 'black', 
+    pattern_density = 0.35, 
+    pattern_fill    = 'black',
+    pattern_colour  = 'black'
+  ) +
+  theme_bw() +
+  labs(
+    title    = "ggpattern::geom_col_pattern()",
+    subtitle = 'geometry-based patterns'
+  ) +
+  scale_pattern_spacing_discrete(range = c(0.01, 0.05)) + 
+  theme(legend.position = 'none') + 
+  coord_fixed(ratio = 1)
+
+p
+
+
+```
+
+```{r}
+data <- read_delim("results_precision.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE)
+data
+```
+
+```{r}
+data %>%
+  filter(balanced == "False") %>%
+  ggplot(aes(x = model, y = f1, fill = dataset)) +
+  geom_col(position = "dodge", width = 0.7) +
+  geom_text(aes(label = sprintf("%.3f", f1)), 
+            position = position_dodge(width = 0.7), 
+            vjust = -0.3, 
+            size = 3.5) +
+  labs(
+    title = "Precision Values by Model and Dataset for imbalanced",
+    x = "Model",
+    y = "Precision Value",
+    fill = "Dataset"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    legend.position = "bottom"
+  ) +
+  scale_fill_brewer(type = "qual", palette = "Set2") +
+  ylim(0, 1)
+
+ggsave("precision_imbalanced.pdf", width=16, height=9)
+```
+
+
+```{r}
+data %>%
+  filter(balanced == "Equally") %>%
+  ggplot(aes(x = model, y = f1, fill = dataset)) +
+  geom_col(position = "dodge", width = 0.7) +
+  geom_text(aes(label = sprintf("%.3f", f1)), 
+            position = position_dodge(width = 0.7), 
+            vjust = -0.3, 
+            size = 3.5) +
+  labs(
+    title = "Precision Values by Model and Dataset for balanced (equally across all datasets)",
+    x = "Model",
+    y = "F1 Score",
+    fill = "Dataset"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    legend.position = "bottom"
+  ) +
+  scale_fill_brewer(type = "qual", palette = "Set2") +
+  ylim(0, 1)
+
+ggsave("precision_balanced_equally.pdf", width=16, height=9)
+```
+```{r}
+data %>%
+  filter(balanced == "WeightedLoss") %>%
+  ggplot(aes(x = model, y = f1, fill = dataset)) +
+  geom_col(position = "dodge", width = 0.7) +
+  geom_text(aes(label = sprintf("%.3f", f1)), 
+            position = position_dodge(width = 0.7), 
+            vjust = -0.3, 
+            size = 3.5) +
+  labs(
+    title = "Precision Values by Model and Dataset applying weighted loss",
+    x = "Model",
+    y = "Precision Value",
+    fill = "Dataset"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    legend.position = "bottom"
+  ) +
+  scale_fill_brewer(type = "qual", palette = "Set2") +
+  ylim(0, 1)
+
+ggsave("precision_balanced_weightedLoss.pdf", width=16, height=9)
+```
+```{r}
+data %>%
+  filter(balanced == "PerDataset") %>%
+  ggplot(aes(x = model, y = f1, fill = dataset)) +
+  geom_col(position = "dodge", width = 0.7) +
+  geom_text(aes(label = sprintf("%.3f", f1)), 
+            position = position_dodge(width = 0.7), 
+            vjust = -0.3, 
+            size = 3.5) +
+  labs(
+    title = "Precision Values by Model and Dataset for balanced (per datasets)",
+    x = "Model",
+    y = "Precision Value",
+    fill = "Dataset"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    legend.position = "bottom"
+  ) +
+  scale_fill_brewer(type = "qual", palette = "Set2") +
+  ylim(0, 1)
+
+ggsave("precision_balanced_perDataset.pdf", width=16, height=9)
+```
+
+
+```{r}
+library(ggpattern)
+
+data <- data %>%
+  mutate(
+    balanced_label = case_when(
+      balanced == "False" ~ "None",
+      balanced == "Equally" ~ "Equally Balanced",
+      balanced == "PerDataset" ~ "Balanced Per Dataset",
+      balanced == "WeightedLoss" ~ "Weighted Loss"
+    ),
+    balanced_label = factor(balanced_label, levels = c(
+      "None", "Equally Balanced", "Balanced Per Dataset", "Weighted Loss"
+    )),
+    dataset_balanced = paste(dataset, balanced_label, sep = "_")
+  ) %>%
+  mutate(
+    angle = case_when(
+      balanced_label == "None" ~ 0,
+      balanced_label == "Equally Balanced" ~ 45,
+      balanced_label == "Balanced Per Dataset" ~ 45,
+      balanced_label == "Weighted Loss" ~ -45
+    ),
+  ) %>%
+  mutate(f1 = f1 * 100)
+
+# Plot
+ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, groups = interaction(balanced_label, angle))) +
+  geom_col_pattern(
+    pattern_angle = data$angle,
+    position = position_dodge(width = 0.9),
+    width = 0.8,
+    pattern_fill = "white",
+    pattern_colour = "white",
+    pattern_density = 0.05,
+    pattern_spacing = 0.015,
+    alpha = 0.7,
+    pattern_size = 0.4
+  ) +
+  geom_text(
+    aes(label = as.character(round(f1, digits = 1))),
+    position = position_dodge(width = 0.9),
+    vjust = -0.3,
+    size = 4
+  ) +
+  labs(
+    x = "Model",
+    y = "Precision",
+    fill = "Dataset",
+    pattern = "Balancing"
+  ) +
+  theme_minimal(base_size = 24) +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    legend.position = "bottom",
+    #legend.box = "vertical"  # Ensures stacked appearance
+  ) +
+  scale_fill_brewer(
+    type = "qual", 
+    palette = "Set2",
+    guide = guide_legend(
+      override.aes = list(pattern = 'none'),
+      nrow = 2  # 2 rows for the fill legend
+    ),
+    labels = c("industry" = "ID", "oss_large" = expression("ODL"), "oss_similar" = expression("ODS"))
+  ) +
+  ylim(0, 100) +
+  scale_pattern_manual(
+    values = c(
+      "None" = "none",
+      "Equally Balanced" = "stripe",
+      "Balanced Per Dataset" = "crosshatch",
+      "Weighted Loss" = "stripe"
+    ),
+    guide = guide_legend(
+      override.aes = list(pattern_fill = 'grey', pattern_angle = c(0, 45, 45, -45)),
+      nrow = 2  # 2 rows for the pattern legend
+    )
+  ) +
+  scale_x_discrete(labels = c(
+    "industry" = "ID",
+    "oss_similar" = expression("ODS"),
+    "oss_large" = expression("ODL")
+  ))
+
+
+ggsave("precision_all.pdf", width=16, height=6)
+```
+
+
+```{r}
+data <- read_delim("results_recall.csv", delim = ";", escape_double = FALSE, trim_ws = TRUE)
+data
+```
+
+```{r}
+library(ggpattern)
+
+data <- data %>%
+  mutate(
+    balanced_label = case_when(
+      balanced == "False" ~ "None",
+      balanced == "Equally" ~ "Equally Balanced",
+      balanced == "PerDataset" ~ "Balanced Per Dataset",
+      balanced == "WeightedLoss" ~ "Weighted Loss"
+    ),
+    balanced_label = factor(balanced_label, levels = c(
+      "None", "Equally Balanced", "Balanced Per Dataset", "Weighted Loss"
+    )),
+    dataset_balanced = paste(dataset, balanced_label, sep = "_")
+  ) %>%
+  mutate(
+    angle = case_when(
+      balanced_label == "None" ~ 0,
+      balanced_label == "Equally Balanced" ~ 45,
+      balanced_label == "Balanced Per Dataset" ~ 45,
+      balanced_label == "Weighted Loss" ~ -45
+    ),
+  ) %>%
+  mutate(f1 = f1 * 100)
+
+# Plot
+ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, groups = interaction(balanced_label, angle))) +
+  geom_col_pattern(
+    pattern_angle = data$angle,
+    position = position_dodge(width = 0.9),
+    width = 0.8,
+    pattern_fill = "white",
+    pattern_colour = "white",
+    pattern_density = 0.05,
+    pattern_spacing = 0.015,
+    alpha = 0.7,
+    pattern_size = 0.4
+  ) +
+  geom_text(
+    aes(label = as.character(round(f1, digits = 1))),
+    position = position_dodge(width = 0.9),
+    vjust = -0.3,
+    size = 4
+  ) +
+  labs(
+    x = "Model",
+    y = "Recall",
+    fill = "Dataset",
+    pattern = "Balancing"
+  ) +
+  theme_minimal(base_size = 24) +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5),
+    legend.position = "bottom",
+    #legend.box = "vertical"  # Ensures stacked appearance
+  ) +
+  scale_fill_brewer(
+    type = "qual", 
+    palette = "Set2",
+    guide = guide_legend(
+      override.aes = list(pattern = 'none'),
+      nrow = 2  # 2 rows for the fill legend
+    ),
+    labels = c("industry" = "ID", "oss_large" = expression("ODL"), "oss_similar" = expression("ODS"))
+  ) +
+  ylim(0, 100) +
+  scale_pattern_manual(
+    values = c(
+      "None" = "none",
+      "Equally Balanced" = "stripe",
+      "Balanced Per Dataset" = "crosshatch",
+      "Weighted Loss" = "stripe"
+    ),
+    guide = guide_legend(
+      override.aes = list(pattern_fill = 'grey', pattern_angle = c(0, 45, 45, -45)),
+      nrow = 2  # 2 rows for the pattern legend
+    )
+  ) +
+  scale_x_discrete(labels = c(
+    "industry" = "ID",
+    "oss_similar" = expression("ODS"),
+    "oss_large" = expression("ODL")
+  ))
+
+
+ggsave("recall_all.pdf", width=16, height=6)
+```

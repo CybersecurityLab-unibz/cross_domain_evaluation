@@ -1,0 +1,12 @@
+name: 'My Python Action'
+description: 'A GitHub Action written in Python'
+inputs:
+  base-branch:
+    description: 'The base branch to which the PR is merged.'
+    required: true
+  branch:
+    description: 'The branch of the PR.'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'

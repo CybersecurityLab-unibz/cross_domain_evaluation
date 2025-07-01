@@ -1,0 +1,40 @@
+name: MINE_SECURITY_COMMENTS
+on:
+  pull_request
+
+jobs:
+  mine_comments:
+    runs-on: ubuntu-latest
+    outputs:
+          FILES: ${{ steps.security_indicator.outputs.FILES }}
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Mine for security comments
+        uses: ./.github/actions/action_extract_information_py/
+        id: security_indicator
+        with:
+          base-branch: ${{ github.base_ref }}
+          branch: ${{ github.head_ref }}
+
+  comment_on_PR:
+    needs: mine_comments
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current branch # this step can be removed once the action is published
+        uses: actions/checkout@v4
+
+      - name: Comment on File-level
+        uses: ./.github/actions/action_comment_pr/
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          file: ${{ needs.mine_comments.outputs.FILES }}
+          owner-repository: ${{ github.repository }}
+          pr-number: ${{ github.event.number }}
+          commit-id: ${{ github.event.before }}
+          logs: true
+
+

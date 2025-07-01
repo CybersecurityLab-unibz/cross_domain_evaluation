@@ -1,0 +1,300 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+# install.packages("tidyverse")
+library(tidyverse)
+library(readxl)
+library(ggpattern)
+data <- read_excel("Mappe1.xlsx")
+#View(data)
+names(data)
+```
+
+```{r}
+width <- 20
+height <- 7
+dpi <- 3000
+
+# are fine for double column layouts
+barplot_text = 8
+axis_text = 32
+label_text = 28
+legend_size = 28
+
+# single column, springer
+# barplot_text = 12
+# axis_text = 38
+# label_text = 32
+# legend_size = 36
+
+```
+
+```{r}
+data %>%   
+  select("How frequently do you encounter vulnerabilities while reviewing?", "Which type of review do you perform?") %>%   
+  slice(-1) %>%   
+  rename(
+    frequently = "How frequently do you encounter vulnerabilities while reviewing?",
+    review = "Which type of review do you perform?"
+  ) %>%   
+  group_by(frequently, review) %>%   
+  summarize(n = n(), .groups = 'drop') %>%  
+  add_row(frequently = "Once a week", n = 0, review = "both") %>%
+  add_row(frequently = "Multiple times a week", n = 0, review = "both") %>%
+  mutate(frequently = factor(frequently, levels = c("Multiple times a week", "Once a week", "Mutliple times a month", "Once a month", "Fewer"))) %>%
+  ggplot(aes(x = frequently, y = n, fill = review)) +   
+    geom_bar(stat = "identity", position = "stack", alpha = 0.7) +
+    geom_text(aes(label = ifelse(n != 0, as.character(n), "")), position = position_stack(vjust = 0.5), size = barplot_text) +
+    labs(fill = "Review Type") +
+    xlab("Frequency of encountered vulnerabilities") +
+    ylab("Number of participants") +
+    scale_y_continuous(breaks = seq(0, 10, by = 2)) +
+    scale_fill_manual(values = c("both" = "#a6cee3",  
+                                 "Regular" = "#1f78b4", 
+                                 "Security" = "#b2df8a")) +
+    theme_minimal() +
+    theme(
+      legend.position = "bottom",
+      legend.text = element_text(size = legend_size),       
+      legend.title = element_text(size = legend_size+2),
+      axis.title.x = element_text(size = axis_text),  
+      axis.title.y = element_text(size = axis_text),
+      #axis.text.x = element_text(angle = 45, hjust = 1, size = label_text),  
+      axis.text.x = element_text(size = label_text),  
+      axis.text.y = element_text(size = label_text)
+    ) 
+
+
+ggsave("1-frequentlyXreviewType.pdf", width = width, height = height, dpi = dpi)
+```
+
+```{r}
+data %>%   
+  select("How frequently do you encounter vulnerabilities while reviewing?", "Would such a tool, as depicted above, help you to spot vulnerabilities more easily?") %>%   
+  slice(-1) %>%   
+  rename(
+    frequently = "How frequently do you encounter vulnerabilities while reviewing?",
+    performance = "Would such a tool, as depicted above, help you to spot vulnerabilities more easily?"
+  ) %>%   
+  group_by(frequently, performance) %>%   
+  summarize(n = n(), .groups = 'drop') %>%
+  add_row(frequently = "Once a week", n = 0, performance = "2") %>%
+  add_row(frequently = "Multiple times a week", n = 0, performance = "2") %>%
+  mutate(frequently = factor(frequently, levels = c("Multiple times a week", "Once a week", "Mutliple times a month", "Once a month", "Fewer"))) %>%
+  ggplot(aes(x = frequently, y = n, fill = performance)) +   
+    geom_bar(stat = "identity", position = "stack", alpha = 0.7) + #, color = "black") +
+    geom_text(aes(label = ifelse(n != 0, as.character(n), "")), position = position_stack(vjust = 0.5), size = barplot_text) +
+    labs(fill = "Usability") +
+    xlab("Frequency of encountered vulnerabilities") +
+    ylab("Number of participants") +
+    scale_y_continuous(breaks = seq(0, 10, by = 2)) +
+    theme_minimal() +
+    #scale_fill_manual(values = c("Fewer" = "#a6cee3",  
+    #                             "Mutliple times a month" = "#1f78b4", 
+    #                             "Once a month" = "#b2df8a")) +
+    scale_fill_manual(values = c("2" = "#a6cee3",  
+                                 "3" = "#1f78b4", 
+                                 "4" = "#b2df8a",
+                                 "5" = "#33a02c")) +
+    theme(
+      legend.position = "bottom",
+      legend.text = element_text(size = legend_size),       
+      legend.title = element_text(size = legend_size+2),
+      axis.title.x = element_text(size = axis_text),  
+      axis.title.y = element_text(size = axis_text),
+      #axis.text.x = element_text(angle = 45, hjust = 1, size = label_text),  
+      axis.text.x = element_text(size = label_text),  
+      axis.text.y = element_text(size = label_text)
+    ) 
+
+
+ggsave("2-frequentlyXtool.pdf", width = width, height = height, dpi = dpi)
+```
+
+```{r}
+
+data %>%   
+  select("How often do you conduct reviews?", "Would such a tool, as depicted above, help you to spot vulnerabilities more easily?") %>%   
+  slice(-1) %>%   
+  rename(
+    frequently = "How often do you conduct reviews?",
+    performance = "Would such a tool, as depicted above, help you to spot vulnerabilities more easily?"
+  ) %>%   
+  group_by(frequently, performance) %>%   
+  summarize(n = n(), .groups = 'drop') %>%
+  #add_row(frequently = "Once a week", n = 0, performance = "2") %>%
+  #add_row(frequently = "Multiple times a week", n = 0, performance = "2") %>%
+  mutate(frequently = factor(frequently, levels = c("Multiple times a week", "Once a week", "Multiple times a month", "Once a month", "Fewer"))) %>%
+  ggplot(aes(x = frequently, y = n, fill = performance)) +   
+    geom_bar(stat = "identity", position = "stack", alpha = 0.7) + #, color = "black") +
+    geom_text(aes(label = ifelse(n != 0, as.character(n), "")), position = position_stack(vjust = 0.5), size = barplot_text) +
+    labs(fill = "Usability") +
+    xlab("Frequency of conducted reviews") +
+    ylab("Number of participants") +
+    scale_y_continuous(breaks = seq(0, 10, by = 2)) +
+    theme_minimal() +
+    #scale_fill_manual(values = c("Fewer" = "#a6cee3",  
+    #                             "Mutliple times a month" = "#1f78b4", 
+    #                             "Once a month" = "#b2df8a")) +
+    scale_fill_manual(values = c("2" = "#bfedbc",  
+                                 "3" = "#6ad463", 
+                                 "4" = "#33a02c",
+                                 "5" = "#236f1f")) +
+    theme(
+      legend.position = "bottom",
+      legend.text = element_text(size = legend_size),       
+      legend.title = element_text(size = legend_size+2),
+      axis.title.x = element_text(size = axis_text),  
+      axis.title.y = element_text(size = axis_text),
+      #axis.text.x = element_text(angle = 45, hjust = 1, size = label_text),  
+      axis.text.x = element_text(size = label_text),  
+      axis.text.y = element_text(size = label_text)
+    ) 
+
+
+ggsave("5-conductXusability.pdf", width = width, height = height, dpi = dpi)
+```
+
+
+
+```{r}
+data %>%   
+  select("How often do you conduct reviews?", "Which type of review do you perform?") %>%   
+  slice(-1) %>%   
+  rename(
+    conduct = "How often do you conduct reviews?",
+    review = "Which type of review do you perform?"
+  ) %>%
+  group_by(conduct, review) %>%   
+  summarize(n = n(), .groups = 'drop')  %>% 
+  mutate(conduct = factor(conduct, levels = c("Multiple times a week", "Once a week", "Multiple times a month", "Once a month", "Fewer"))) %>%
+  ggplot(aes(x = conduct, y = n, fill = review)) +   
+    geom_bar(stat = "identity", position = "stack", alpha = 0.7) +
+    geom_text(aes(label = ifelse(n != 0, as.character(n), "")), position = position_stack(vjust = 0.5), size = barplot_text) +
+    labs(fill = "Review Type") +
+    xlab("Frequency of conducted reviews") +
+    ylab("Number of participants") +
+    scale_y_continuous(breaks = seq(0, 10, by = 2)) +
+    scale_fill_manual(values = c("both" = "#a6cee3",  
+                                 "Regular" = "#1f78b4", 
+                                 "Security" = "#b2df8a")) +
+    theme_minimal() +
+    theme(
+      legend.position = "bottom",
+      legend.text = element_text(size = legend_size),       
+      legend.title = element_text(size = legend_size+2),
+      axis.title.x = element_text(size = axis_text),  
+      axis.title.y = element_text(size = axis_text),
+      #axis.text.x = element_text(angle = 45, hjust = 1, size = label_text),  
+      axis.text.x = element_text(size = label_text),  
+      axis.text.y = element_text(size = label_text)
+    ) 
+
+
+ggsave("3-conductXreviewType.pdf", width = width, height = height, dpi = dpi)
+```
+
+
+```{r}
+data %>%   
+  select("How frequently do you encounter vulnerabilities while reviewing?", "How often do you conduct reviews?") %>%   
+  slice(-1) %>%   
+  rename(
+    frequently = "How frequently do you encounter vulnerabilities while reviewing?",
+    conduct = "How often do you conduct reviews?"
+  ) %>%
+  group_by(frequently, conduct) %>%   
+  summarize(n = n(), .groups = 'drop')  %>% 
+  add_row(frequently = "Once a week", n = 0, conduct = "Fewer") %>%
+  add_row(frequently = "Multiple times a week", n = 0, conduct = "Fewer") %>%
+  mutate(frequently = factor(frequently, levels = c("Multiple times a week", "Once a week", "Mutliple times a month", "Once a month", "Fewer"))) %>%
+  ggplot(aes(x = frequently, y = n, fill = conduct)) +   
+    geom_bar(stat = "identity", position = "stack", alpha = 0.7) +
+    geom_text(aes(label = ifelse(n != 0, as.character(n), "")), position = position_stack(vjust = 0.5), size = barplot_text) +
+    labs(fill = "Review Type") +
+    xlab("Frequency of conducting reviews") +
+    ylab("Number of participants") +
+    scale_y_continuous(breaks = seq(0, 10, by = 2)) +
+    scale_fill_manual(values = c("Fewer" = "#a6cee3",
+                                 "Once a week" = "#1f78b4",
+                                 "Multiple times a week" = "#b2df8a",
+                                 "Once a month" = "#33a02c",
+                                 "Multiple times a month" = "#fb9a99")) +
+    theme_minimal() +
+    theme(
+      legend.position = "bottom",
+      legend.text = element_text(size = legend_size),       
+      legend.title = element_text(size = legend_size+2),
+      axis.title.x = element_text(size = axis_text),  
+      axis.title.y = element_text(size = axis_text),
+      #axis.text.x = element_text(angle = 45, hjust = 1, size = label_text),  
+      axis.text.x = element_text(size = label_text),  
+      axis.text.y = element_text(size = label_text)
+    ) 
+
+ggsave("4-frequentlyXconduct.pdf", width = width, height = height, dpi = dpi)
+```
+
+
+NOT USED
+```{r}
+data %>%   
+  select("How frequently do you encounter vulnerabilities while reviewing?", "Would such a tool, as depicted above, help you to spot vulnerabilities more easily?", "Which type of review do you perform?") %>%   
+  slice(-1) %>%   
+  rename(
+    frequently = "How frequently do you encounter vulnerabilities while reviewing?",
+    performance = "Would such a tool, as depicted above, help you to spot vulnerabilities more easily?",
+    review = "Which type of review do you perform?"
+  ) %>%   
+  group_by(frequently, performance, review) %>%   
+  summarize(n = n(), .groups = 'drop')  %>%
+  mutate(cumulative_n = cumsum(n) - (n / 2)) %>%
+  mutate(ymin = cumulative_n - 0.5,
+         ymax = cumulative_n + 0.5) %>%
+  mutate(frequently = factor(frequently, levels = c("Mutliple times a month", "Once a month", "Fewer"))) %>%
+  ggplot(aes(x = frequently, y = n, fill = performance, pattern = review)) +
+    geom_bar_pattern(
+      stat = "identity",
+      position = "stack",
+      #pattern_density = 1,
+      pattern_fill = "black",
+      #pattern_color = "black",
+      #pattern_alpha = 0.5,
+      pattern_spacing = 0.05,
+      #pattern_angle = 45
+    ) +
+    # geom_text(
+    #   aes(label = n),
+    #   position = position_stack(vjust = 0.5),  # Center text at the middle of the bar
+    #   size = 5,                                # Text size
+    #   color = "white",                         # Text color
+    # ) +
+    # Labels and scales
+    labs(fill = "Usability", pattern = "Review type") +
+    xlab("Frequency of vulnerability encounter") +
+    ylab("Number of participants") +
+    scale_y_continuous(breaks = seq(0, 10, by = 2)) +
+    # Manual color scale
+    scale_fill_manual(values = c("2" = "#a6cee3",
+                                 "3" = "#1f78b4",
+                                 "4" = "#b2df8a",
+                                 "5" = "#33a02c")) +
+    
+    # Theme adjustments
+    theme_minimal() +
+    theme(
+      legend.position = "top",
+      legend.text = element_text(size = legend_size),       
+      legend.title = element_text(size = legend_size+2),
+      axis.title.x = element_text(size = axis_text),  
+      axis.title.y = element_text(size = axis_text),
+      #axis.text.x = element_text(angle = 45, hjust = 1, size = label_text),  
+      axis.text.x = element_text(size = label_text),  
+      axis.text.y = element_text(size = label_text)
+    ) 
+
+```

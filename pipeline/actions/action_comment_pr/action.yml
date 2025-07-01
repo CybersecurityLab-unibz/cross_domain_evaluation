@@ -1,0 +1,27 @@
+name: 'Comment on PR'
+description: 'A Github action wrapping the API calls to GitHub'
+inputs:
+  github-token:
+    description: 'GITHUB-token stored in the secrets'
+    required: true
+  body:
+    description: 'Message to the main PR page'
+    required: False
+  file:
+    description: 'Message to individual files'
+    required: False
+  owner-repository:
+    description: 'Owner of the repository'
+    required: True
+  pr-number:
+    description: 'number of the PR'
+    required: True
+  commit-id:
+    description: 'commit-id of the last push'
+    required: True
+  logs:
+    required: False
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
