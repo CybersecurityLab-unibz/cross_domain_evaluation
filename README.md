@@ -777,6 +777,7 @@ The folder /pipeline, contains the implementation of the pipeline. In the file /
 ## Note
 This repository uses `git lsf`, teh documentation how to install it can be found under [https://git-lfs.com](https://git-lfs.com)
 
+The fine-tuned models can be found under the following link [https://huggingface.co/collections/CybersecurityLab-unibz/cross-domain-evaluation-a-mixed-study-6863eff4a4ca45dfe8af7eed](https://huggingface.co/collections/CybersecurityLab-unibz/cross-domain-evaluation-a-mixed-study-6863eff4a4ca45dfe8af7eed).
 ## How to cite the work
 
 #### Preprint:
