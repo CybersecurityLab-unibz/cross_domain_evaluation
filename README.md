@@ -774,6 +774,9 @@ The folder /ml_docker_github contains the configuration which is needed to host 
 ### Pipeline
 The folder /pipeline, contains the implementation of the pipeline. In the file /pipeline/actions/action_dl/Dockerfile the identifier of the containerized model need to be inserted.
 
+## Note
+This repository uses `git lsf`, teh documentation how to install it can be found under [https://git-lfs.com](https://git-lfs.com)
+
 ## How to cite the work
 
 #### Preprint:
