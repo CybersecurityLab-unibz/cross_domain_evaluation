@@ -8,12 +8,12 @@ data
       --balanced
       --balancedPerDataset
       --weightedLoss
-    --ODS
+    --TOD
       --none
       --balanced
       --balancedPerDataset
       --weightedLoss
-    --ODL
+    --GOD
       --none
       --balanced
       --balancedPerDataset
