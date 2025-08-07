@@ -5,12 +5,6 @@ Link to the pre-print (under review)
 
 Link to the publication (under review)
 
-## Abstract
-Current deep learning-based vulnerability detection solutions discussed in academia are not easily accessible for developers. Moreover, their performance in industrial settings is scarcely addressed in the literature.
-Translating approaches from academia to industry is a challenging task, especially when integrating new methods into existing technology stacks. Additionally, uncertainty about whether the approach will perform well in an industrial environment hinders its adoption.
-In this work, we propose AI-DO (*A*utomating vulnerability detection *I*ntegration for *D*evelopers' *O*perations), which embeds a transformer-based vulnerability detection approach into the review process of changed or newly developed source code. We also compiled three datasets of over 500 thousand functions annotated with state-of-the-art SAST tools, using both open and industry data. The datasets were employed in a cross-domain evaluation of a deep learner.
-A survey among developers of the company illustrates the usefulness of the AI-DO. Finally, we found that learning from the industrial data accurately predicts vulnerabilities in the same domain, but it forgets in the open-source one. We also saw that learning from a domain related open source projects is beneficial for the prediction of vulnerabilities in the industrial context.
-
 ### Extraction of the datasets from the original source
 The folder /create_datasets contains a README.md with execution examples one how to create the datasets. For the industry dataset, only the final dataset is shared; however, not the repositories leveraged to create it.
 
@@ -778,6 +772,8 @@ The folder /pipeline, contains the implementation of the pipeline. In the file /
 This repository uses `git lsf`, teh documentation how to install it can be found under [https://git-lfs.com](https://git-lfs.com)
 
 The fine-tuned models can be found under the following link [https://huggingface.co/collections/CybersecurityLab-unibz/cross-domain-evaluation-a-mixed-study-6863eff4a4ca45dfe8af7eed](https://huggingface.co/collections/CybersecurityLab-unibz/cross-domain-evaluation-a-mixed-study-6863eff4a4ca45dfe8af7eed).
+
+<!--
 ## How to cite the work
 
 #### Preprint:
@@ -786,6 +782,7 @@ The fine-tuned models can be found under the following link [https://huggingface
 ```
 
 #### Publication:
+-->
 
 ```bibtext
 ```
