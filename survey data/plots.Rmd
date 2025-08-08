@@ -9,7 +9,7 @@ output: html_notebook
 library(tidyverse)
 library(readxl)
 library(ggpattern)
-data <- read_excel("Mappe1.xlsx")
+data <- read_excel("responses.xlsx")
 #View(data)
 names(data)
 ```
