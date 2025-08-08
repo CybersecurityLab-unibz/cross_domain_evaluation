@@ -8,7 +8,10 @@ output: html_notebook
 library(readr)
 library(jsonlite)
 library(tidyverse)
-
+# set (local) path for DejaVu font
+# it can be fount under the link: https://www.fontsquirrel.com/fonts/dejavu-sans
+font_add(family = "DejaVu", regular = "DejaVuSans.ttf")
+showtext_auto()
 ```
 
 ```{r}
@@ -224,7 +227,16 @@ data <- data %>%
       balanced_label == "Weighted Loss" ~ -45
     ),
   ) %>%
-  mutate(f1 = f1 * 100)
+  mutate(f1 = f1 * 100) %>%
+  mutate(
+    balanced_label = recode(
+      balanced_label,
+      "None" = "NB",
+      "Equally Balanced" = "USC",
+      "Balanced Per Dataset" = "URSC",
+      "Weighted Loss" = "WLF"
+    )
+  )
 
 # Plot
 ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, groups = interaction(balanced_label, angle))) +
@@ -254,7 +266,7 @@ ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, gr
   theme_minimal(base_size = 24) +
   theme(
     axis.text.x = element_text(angle = 0, hjust = 0.5),
-    legend.position = "bottom",
+    legend.position = "none",
     #legend.box = "vertical"  # Ensures stacked appearance
   ) +
   scale_fill_brewer(
@@ -264,15 +276,15 @@ ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, gr
       override.aes = list(pattern = 'none'),
       nrow = 2  # 2 rows for the fill legend
     ),
-    labels = c("industry" = "ID", "oss_large" = expression("ODL"), "oss_similar" = expression("ODS"))
+    labels = c("industry" = "ID", "oss_large" = expression("GOD"), "oss_similar" = expression("TOD"))
   ) +
   ylim(0, 100) +
   scale_pattern_manual(
     values = c(
-      "None" = "none",
-      "Equally Balanced" = "stripe",
-      "Balanced Per Dataset" = "crosshatch",
-      "Weighted Loss" = "stripe"
+      "NB" = "none",
+      "USC" = "stripe",
+      "URSC" = "crosshatch",
+      "WLF" = "stripe"
     ),
     guide = guide_legend(
       override.aes = list(pattern_fill = 'grey', pattern_angle = c(0, 45, 45, -45)),
@@ -280,13 +292,14 @@ ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, gr
     )
   ) +
   scale_x_discrete(labels = c(
-    "industry" = "ID",
-    "oss_similar" = expression("ODS"),
-    "oss_large" = expression("ODL")
-  ))
+    "industry" = "<span style='font-size:22pt; color:#66C2A5B3;'>■</span><span style='font-size:18pt;'> ID</span>",
+    "oss_similar" = "<span style='font-size:22pt; color:#8DA0CBB3;'>■</span><span style='font-size:18pt;'> TOD</span>",
+    "oss_large" = "<span style='font-size:22pt; color:#FC8D62B3;'>■</span><span style='font-size:18pt;'> GOD</span>"
+  )) +
+  theme(axis.text.x = element_markdown(size = 20, family = "DejaVu"))
 
 
-ggsave("f1_all.pdf", width=16, height=6)
+ggsave("f1_all.pdf", width=16, height=5)
 ```
 
 ```{r}
@@ -448,7 +461,16 @@ data <- data %>%
       balanced_label == "Weighted Loss" ~ -45
     ),
   ) %>%
-  mutate(f1 = f1 * 100)
+  mutate(f1 = f1 * 100) %>%
+  mutate(
+    balanced_label = recode(
+      balanced_label,
+      "None" = "NB",
+      "Equally Balanced" = "USC",
+      "Balanced Per Dataset" = "URSC",
+      "Weighted Loss" = "WLF"
+    )
+  )
 
 # Plot
 ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, groups = interaction(balanced_label, angle))) +
@@ -478,7 +500,7 @@ ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, gr
   theme_minimal(base_size = 24) +
   theme(
     axis.text.x = element_text(angle = 0, hjust = 0.5),
-    legend.position = "bottom",
+    legend.position = "none",
     #legend.box = "vertical"  # Ensures stacked appearance
   ) +
   scale_fill_brewer(
@@ -488,15 +510,15 @@ ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, gr
       override.aes = list(pattern = 'none'),
       nrow = 2  # 2 rows for the fill legend
     ),
-    labels = c("industry" = "ID", "oss_large" = expression("ODL"), "oss_similar" = expression("ODS"))
+    labels = c("industry" = "ID", "oss_large" = expression("GOD"), "oss_similar" = expression("TOD"))
   ) +
   ylim(0, 100) +
   scale_pattern_manual(
     values = c(
-      "None" = "none",
-      "Equally Balanced" = "stripe",
-      "Balanced Per Dataset" = "crosshatch",
-      "Weighted Loss" = "stripe"
+      "NB" = "none",
+      "USC" = "stripe",
+      "URSC" = "crosshatch",
+      "WLF" = "stripe"
     ),
     guide = guide_legend(
       override.aes = list(pattern_fill = 'grey', pattern_angle = c(0, 45, 45, -45)),
@@ -504,13 +526,14 @@ ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, gr
     )
   ) +
   scale_x_discrete(labels = c(
-    "industry" = "ID",
-    "oss_similar" = expression("ODS"),
-    "oss_large" = expression("ODL")
-  ))
+    "industry" = "<span style='font-size:22pt; color:#66C2A5B3;'>■</span><span style='font-size:18pt;'> ID</span>",
+    "oss_similar" = "<span style='font-size:22pt; color:#8DA0CBB3;'>■</span><span style='font-size:18pt;'> TOD</span>",
+    "oss_large" = "<span style='font-size:22pt; color:#FC8D62B3;'>■</span><span style='font-size:18pt;'> GOD</span>"
+  )) +
+  theme(axis.text.x = element_markdown(size = 20, family = "DejaVu"))
 
 
-ggsave("precision_all.pdf", width=16, height=6)
+ggsave("precision_all.pdf", width=16, height=4)
 ```
 
 
@@ -521,6 +544,9 @@ data
 
 ```{r}
 library(ggpattern)
+library(ggtext)
+font_add(family = "DejaVu", regular = "DejaVuSans.ttf")  # path or font name
+showtext_auto()
 
 data <- data %>%
   mutate(
@@ -543,7 +569,16 @@ data <- data %>%
       balanced_label == "Weighted Loss" ~ -45
     ),
   ) %>%
-  mutate(f1 = f1 * 100)
+  mutate(f1 = f1 * 100) %>%
+  mutate(
+    balanced_label = recode(
+      balanced_label,
+      "None" = "NB",
+      "Equally Balanced" = "USC",
+      "Balanced Per Dataset" = "URSC",
+      "Weighted Loss" = "WLF"
+    )
+  )
 
 # Plot
 ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, groups = interaction(balanced_label, angle))) +
@@ -573,7 +608,7 @@ ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, gr
   theme_minimal(base_size = 24) +
   theme(
     axis.text.x = element_text(angle = 0, hjust = 0.5),
-    legend.position = "bottom",
+    legend.position = "none",
     #legend.box = "vertical"  # Ensures stacked appearance
   ) +
   scale_fill_brewer(
@@ -583,15 +618,15 @@ ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, gr
       override.aes = list(pattern = 'none'),
       nrow = 2  # 2 rows for the fill legend
     ),
-    labels = c("industry" = "ID", "oss_large" = expression("ODL"), "oss_similar" = expression("ODS"))
+    labels = c("industry" = "ID", "oss_large" = expression("GOD"), "oss_similar" = expression("TOD"))
   ) +
   ylim(0, 100) +
   scale_pattern_manual(
     values = c(
-      "None" = "none",
-      "Equally Balanced" = "stripe",
-      "Balanced Per Dataset" = "crosshatch",
-      "Weighted Loss" = "stripe"
+      "NB" = "none",
+      "USC" = "stripe",
+      "URSC" = "crosshatch",
+      "WLF" = "stripe"
     ),
     guide = guide_legend(
       override.aes = list(pattern_fill = 'grey', pattern_angle = c(0, 45, 45, -45)),
@@ -599,11 +634,13 @@ ggplot(data, aes(x = model, y = f1, fill = dataset, pattern = balanced_label, gr
     )
   ) +
   scale_x_discrete(labels = c(
-    "industry" = "ID",
-    "oss_similar" = expression("ODS"),
-    "oss_large" = expression("ODL")
-  ))
+    "industry" = "<span style='font-size:22pt; color:#66C2A5B3;'>■</span><span style='font-size:18pt;'> ID</span>",
+    "oss_similar" = "<span style='font-size:22pt; color:#8DA0CBB3;'>■</span><span style='font-size:18pt;'> TOD</span>",
+    "oss_large" = "<span style='font-size:22pt; color:#FC8D62B3;'>■</span><span style='font-size:18pt;'> GOD</span>"
+  )) +
+  theme(axis.text.x = element_markdown(size = 20, family = "DejaVu"))
 
 
-ggsave("recall_all.pdf", width=16, height=6)
+ggsave("recall_all.pdf", width=16, height=4)
+
 ```
