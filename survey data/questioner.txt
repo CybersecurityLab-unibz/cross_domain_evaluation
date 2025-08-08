@@ -1,0 +1,48 @@
+Survey Disclaimer
+
+Thank you for participating in our survey. Your feedback is highly valuable and will help us improve our services/products. Please note the following:
+Confidentiality: Your responses will be kept strictly confidential. All data will be anonymized and analyzed in aggregate, meaning individual responses will not be identifiable.
+Voluntary Participation: Participation in this survey is completely voluntary. You may choose to skip any question or exit the survey at any time without any negative consequences.
+Data Usage: The information you provide will be used solely for the purposes of this survey and related research. Your data will not be shared with third parties without your explicit consent.
+Consent: By proceeding with this survey, you consent to the collection and use of your responses as outlined above.
+If you have any questions or concerns regarding this survey, please contact Moritz Mock (momock@unibz.it).
+
+Description of the tool:
+
+The aim of this survey is to understand if the developed tool might be useful for the development process. The tool is triggered by any pull request (PR) and inspects the changed (added, removed, or modified) source code. It automatically comments on a PR at the line level of a given file where a vulnerability has been detected. Currently, the approach is designed to work on PHP code; however, with a different machine-learning model, it can also be applied to other programming languages.
+In the following section, a screenshot of an application is shown (file screenshot.png). Please consider only the text and the fact that it is here.
+
+
+Questioner
+1. How frequently do you encounter vulnerabilities while reviewing? (single option)
+- Multiple times a week
+- Once a week
+- Multiple times a month
+- Once a month
+- Fewer
+2. Would such a tool, as depicted above, help you to spot vulnerabilities more easily?
+liker scale from 1 (low) to 5 (high)
+3. Is the description clear enough, or would you prefer something different?
+open question
+4. Any other suggestions or comments?
+open question
+
+
+--- Demographics ---
+
+5. Which type of review do you perform? (single option)
+- Regular
+- Security 
+- both
+6. On a scale from 0 to 100, how frequently do you perform security reviews?
+scale 0 (low) to 100 (high)
+7. How often do you conduct reviews?
+- Multiple times a week
+- Once a week
+- Multiple times a month
+- Once a month
+- Fewer
+8. What is your current role?
+open question
+9. How long have you been working in the IT industry?
+open question
