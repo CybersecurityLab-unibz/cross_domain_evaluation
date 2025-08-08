@@ -18,15 +18,13 @@ open question
 - Regular
 - Security 
 - both
-6. On a scale from 0 to 100, how frequently do you perform security reviews?
-scale 0 (low) to 100 (high)
-7. How often do you conduct reviews?
+6. How often do you conduct reviews?
 - Multiple times a week
 - Once a week
 - Multiple times a month
 - Once a month
 - Fewer
-8. What is your current role?
+7. What is your current role?
 open question
-9. How long have you been working in the IT industry?
+8. How long have you been working in the IT industry?
 open question
