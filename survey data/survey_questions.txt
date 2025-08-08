@@ -1,0 +1,32 @@
+1. How frequently do you encounter vulnerabilities while reviewing? (single option)
+- Multiple times a week
+- Once a week
+- Multiple times a month
+- Once a month
+- Fewer
+2. Would such a tool, as depicted above, help you to spot vulnerabilities more easily?
+liker scale from 1 (low) to 5 (high)
+3. Is the description clear enough, or would you prefer something different?
+open question
+4. Any other suggestions or comments?
+open question
+
+
+--- Demographics ---
+
+5. Which type of review do you perform? (single option)
+- Regular
+- Security 
+- both
+6. On a scale from 0 to 100, how frequently do you perform security reviews?
+scale 0 (low) to 100 (high)
+7. How often do you conduct reviews?
+- Multiple times a week
+- Once a week
+- Multiple times a month
+- Once a month
+- Fewer
+8. What is your current role?
+open question
+9. How long have you been working in the IT industry?
+open question
