@@ -7,9 +7,11 @@ Data Usage: The information you provide will be used solely for the purposes of 
 Consent: By proceeding with this survey, you consent to the collection and use of your responses as outlined above.
 If you have any questions or concerns regarding this survey, please contact Moritz Mock (momock@unibz.it).
 
-Description of the tool:
+Description of the tool
 
-The aim of this survey is to understand if the developed tool might be useful for the development process. The tool is triggered by any pull request (PR) and inspects the changed (added, removed, or modified) source code. It automatically comments on a PR at the line level of a given file where a vulnerability has been detected. Currently, the approach is designed to work on PHP code; however, with a different machine-learning model, it can also be applied to other programming languages.
+The aim of this survey is to understand if the developed tool might be useful for the development process. The tool is triggered by any pull request (PR) and inspects the changed
+(added, removed, or modified) source code. It automatically comments on a PR at the line level of a given file where a vulnerability has been detected. Currently, the approach is designed to
+work on PHP code; however, with a different machine-learning model, it can also be applied to other programming languages.
 In the following section, a screenshot of an application is shown (file screenshot.png). Please consider only the text and the fact that it is here.
 
 
