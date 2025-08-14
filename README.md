@@ -762,10 +762,13 @@ The folder /code-ml contains all the necessary information to fine-tune and vali
 ### Plots and Survey data
 The folder /plots_results and /survey\ data contain all the results in a csv format and the corresponding plots presented in the paper, alongside the R notebook, which was used to create them.
 
-### Docker 
+### Implementation details
+For the analysis, we implemented our approach using PyTorch 2.7 in Python 3. We ran the tasks in a cluster consisting of two Nvidia A100 GPUs with 192 GB of RAM on a server with the processor Xeon 4208, which has 16 cores per node, for a total of 32 cores.
+
+#### Docker 
 The folder /ml_docker_github contains the configuration which is needed to host an instance of the DL to be executed in the cloud. The model needs to stored in the path /ml_docker_github/ml_model, afterwards the container needs to created and pushed to dockerhub or any other hosting platform.
 
-### Pipeline
+#### Pipeline
 The folder /pipeline, contains the implementation of the pipeline. In the file /pipeline/actions/action_dl/Dockerfile the identifier of the containerized model need to be inserted.
 
 ## Note
