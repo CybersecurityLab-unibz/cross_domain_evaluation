@@ -1,5 +1,5 @@
 # Cross-Domain Evaluation
-This repository contains the replication package for the work  *Cross-Domain Evaluation of Transformer-Based Vulnerability Detection on Open & Industry Data - A Mixed Study*. The work was conducted by Moritz Mock, Thomas Forrer, and Barbara Russo.
+This repository contains the replication package for the work  *Cross-Domain Evaluation of Transformer-Based Vulnerability Detection on Open & Industry Data*. The work was conducted by Moritz Mock, Thomas Forrer, and Barbara Russo.
 
 Link to the pre-print (under review)
 
